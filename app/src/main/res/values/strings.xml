@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">myapp_driver</string>
+    <string name="search_button">Search</string>
+    <string name="action_search">Search</string>
+    <string name="action_login">login</string>
+    <string-array name="City">
+        <item>QuangNgai</item>
+        <item>DaNang</item>
+        <item>Hue</item>
+        <item>HaNoi</item>
+        <item>HoChiMinh</item>
+    </string-array>
+</resources>
