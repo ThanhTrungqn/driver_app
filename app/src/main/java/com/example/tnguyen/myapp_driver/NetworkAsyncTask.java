@@ -1,5 +1,8 @@
 package com.example.tnguyen.myapp_driver;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,8 +27,14 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by tnguyen on 5/15/2018.
  */
 
-public class NetworkAsyncTask extends AsyncTask<String, Void, String> {
+public class NetworkAsyncTask extends AsyncTask<String, String , String> {
     String response="";
+    ProgressDialog dialog;
+
+    public NetworkAsyncTask(Activity activity) {
+        dialog = new ProgressDialog(activity);
+    }
+
     @Override
     protected String doInBackground(String... params) {
         String data=params[0];
@@ -33,7 +42,7 @@ public class NetworkAsyncTask extends AsyncTask<String, Void, String> {
         String text = "";
         BufferedReader reader=null;
         try {
-            URL url = new URL("https://www.google.com");
+            URL url = new URL("http://5.196.12.31/testphp.php");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -82,4 +91,19 @@ public class NetworkAsyncTask extends AsyncTask<String, Void, String> {
         }
         return response;
     }
+
+
+    @Override
+    protected void onPreExecute() {
+        dialog.setMessage("Doing something, please wait.");
+        dialog.show();
+    }
+
+    protected void onPostExecute(String success) {
+        Log.e("onPostExecute: ", success );
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
 }

@@ -1,54 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tnguyen.myapp_driver.MainActivity"
-    android:orientation="vertical">>
+    tools:context=".MainActivity">
 
-
-    <Spinner
-        android:id="@+id/textCity"
-        android:layout_width="fill_parent"
-        android:textSize="50sp"
-        android:layout_height="150dp" />
-
-    <TextView
-        android:id="@+id/textStartTime"
-        android:layout_width="fill_parent"
-        android:layout_height="152dp"
-        android:background="#b8b8fd"
-        android:clickable="true"
-        android:drawableLeft="@drawable/ic_date_from"
-        android:drawablePadding="10dp"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:text="   Rental Start \n   Date and Time"
-        android:textColor="#3f51b5"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/textEndTime"
-        android:drawablePadding="10dp"
-        android:gravity="center_vertical"
-        android:textColor="#3f51b5"
-        android:layout_width="fill_parent"
-        android:layout_height="160dp"
-        android:layout_below="@+id/textCity"
-        android:clickable="true"
-        android:maxLines="2"
-        android:text="   Rental End \n   Date and Time"
-        android:background="#9898fb"
-        android:textSize="20sp"
-        android:drawableLeft="@drawable/ic_date_to"/>
-
-    <Button
-        android:id="@+id/main_search_button"
+    <!-- our toolbar -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
-        android:text="@string/search_button" />
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-</LinearLayout >
+    <!-- our tablayout to display tabs  -->
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <!-- View pager to swipe views -->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"/>
+
+</RelativeLayout>
