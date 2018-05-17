@@ -1,8 +1,11 @@
-package com.example.tnguyen.myapp_driver;
+package com.example.tnguyen.myapp_driver.search_activity;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.tnguyen.myapp_driver.tablayout.TabFragmentLogin;
+import com.example.tnguyen.myapp_driver.tablayout.TabFragmentSearch;
 
 /**
  * Created by tnguyen on 5/16/2018.

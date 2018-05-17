@@ -1,4 +1,4 @@
-package com.example.tnguyen.myapp_driver;
+package com.example.tnguyen.myapp_driver.task;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -43,6 +43,7 @@ public class NetworkAsyncTask extends AsyncTask<String, String , String> {
         BufferedReader reader=null;
         try {
             URL url = new URL("http://5.196.12.31/testphp.php");
+            //URL url = new URL("https://api.androidhive.info/json/movies.json");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -52,23 +53,6 @@ public class NetworkAsyncTask extends AsyncTask<String, String , String> {
             os1.flush();
             os1.close();
 
-            //Uri.Builder builder = new Uri.Builder()
-             //       .appendQueryParameter("name", "quangngai")
-             //       .appendQueryParameter("sDate", String.valueOf("15"));
-            //    .appendQueryParameter("eDate", String.valueOf(eDate));
-            //String query = builder.build().getEncodedQuery();
-
-            //Log.e("msg", query);
-
-            //OutputStream os = conn.getOutputStream();
-
-            //BufferedWriter writer = new BufferedWriter(
-            //        new OutputStreamWriter(os, "UTF-8"));
-            //writer.write(query);
-            //writer.flush();
-            //Log.e("msg", writer.toString());
-            //writer.close();
-            //os.close();
             int responseCode = conn.getResponseCode();
             conn.connect();
             Log.e ("response code", String.valueOf(responseCode));

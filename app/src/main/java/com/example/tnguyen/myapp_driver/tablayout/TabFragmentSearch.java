@@ -1,9 +1,8 @@
-package com.example.tnguyen.myapp_driver;
+package com.example.tnguyen.myapp_driver.tablayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -19,10 +18,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.tnguyen.myapp_driver.R;
+import com.example.tnguyen.myapp_driver.search_activity.ShowResultActivity;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by tnguyen on 5/16/2018.
@@ -100,7 +101,7 @@ public class TabFragmentSearch extends Fragment {
 
 
                 //goto new layer => show the resultat search
-                Intent intent = new Intent(getActivity(),ShowResult.class);
+                Intent intent = new Intent(getActivity(),ShowResultActivity.class);
                 intent.putExtra("STRING_I_NEED",data_post );
                 getActivity().startActivity(intent);
                 //goto new layer => show the resultat search
