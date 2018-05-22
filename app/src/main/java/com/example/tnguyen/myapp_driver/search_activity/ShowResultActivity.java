@@ -1,9 +1,13 @@
 package com.example.tnguyen.myapp_driver.search_activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.tnguyen.myapp_driver.R;
 import com.example.tnguyen.myapp_driver.task.NetworkAsyncTask;
@@ -80,6 +84,19 @@ public class ShowResultActivity extends AppCompatActivity {
         // Getting adapter by passing xml data ArrayList
         adapter=new LazyAdapter(this, songsList);
         list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                // Get the selected item text from ListView
+                //String selectedItem = (String) adapterView.getItemAtPosition(i);
+                Log.e("click", String.valueOf(i));
+                // Display the selected item text on TextView
+                //Intent intent = new Intent(getApplicationContext(),ApkInfoActivity.class);
+                //intent.putExtra("name",classes[i]);
+                //startActivity(intent);
+            }
+        });
 
     }
 }

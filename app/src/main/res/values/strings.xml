@@ -3,6 +3,7 @@
     <string name="search_button">Search</string>
     <string name="action_search">Search</string>
     <string name="action_login">login</string>
+    <string name="city_from">Where from</string>
     <string-array name="City">
         <item>QuangNgai</item>
         <item>DaNang</item>

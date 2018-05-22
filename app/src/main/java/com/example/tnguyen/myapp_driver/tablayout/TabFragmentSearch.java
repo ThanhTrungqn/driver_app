@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,29 +16,50 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.tnguyen.myapp_driver.R;
 import com.example.tnguyen.myapp_driver.search_activity.ShowResultActivity;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by tnguyen on 5/16/2018.
  */
 
 public class TabFragmentSearch extends Fragment {
-
+    private static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static int RESULT_OK = 1;
+    private static int RESULT_CANCELED = 0;
     Calendar dateTime = Calendar.getInstance();
     private Button btn_search;
-    private TextView textStart, textEnd;
-    private Spinner staticSpinner;
+
+
     private int sDate,sMonth,sYear,sHour,sMinute;
-    private int eDate,eMonth,eYear,eHour,eMinute;
+    private TextView text_date_go,text_time_go;
+    private EditText text_where_from,text_where_to;
+    private GridLayout layout_date_go,layout_time_go;
+    private LinearLayout layout_where_from,layout_where_to;
     private String currentCity;
     private String responsepost;
 
@@ -44,28 +67,46 @@ public class TabFragmentSearch extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_fragment_search, container, false);
         //khai bien
-        btn_search = view.findViewById(R.id.main_search_button);
-        textStart = view.findViewById(R.id.textStartTime);
-        textEnd = view.findViewById(R.id.textEndTime);
+        btn_search = view.findViewById(R.id.search_button);
+
+        //declare layout clickable
+        layout_where_from = view.findViewById(R.id.search_city_from_layout);
+        layout_where_to = view.findViewById(R.id.search_city_to_layout);
+        layout_date_go = view.findViewById(R.id.search_date_layout);
+        layout_time_go = view.findViewById(R.id.search_time_layout);
+
+        text_where_from = view.findViewById(R.id.search_city_from_text);
+        text_where_to = view.findViewById(R.id.search_city_to_text);
+        text_date_go = view.findViewById(R.id.search_date_text);
+        text_time_go = view.findViewById(R.id.search_time_text);
 
         //update chọn thành phố
-        staticSpinner = view.findViewById(R.id.textCity);
-        ArrayAdapter<CharSequence> staticAdapter =ArrayAdapter.createFromResource(this.getActivity(),
-                R.array.City, android.R.layout.simple_spinner_dropdown_item);
-        staticAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        staticSpinner.setAdapter(staticAdapter);
-        //Date picker
-        textStart.setOnClickListener(new View.OnClickListener() {
+        text_where_from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateDateStart();
+                PlaceAutocomplet();
+            }
+        });
+
+        text_where_to.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlaceAutocomplet();
+            }
+        });
+
+        //Date picker
+        layout_date_go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateDateGo();
             }
         });
         //Time picker
-        textEnd.setOnClickListener(new View.OnClickListener() {
+        layout_time_go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateDateEnd();
+                updateTimeGo();
             }
         });
         //Button search
@@ -76,29 +117,12 @@ public class TabFragmentSearch extends Fragment {
                 //todo: Verify if filled all champs => active button, if not show message toast+ do nothing
                 //prepare data
                 String data_post= "";
-                try {
-                    currentCity= staticSpinner.getSelectedItem().toString();
-                    data_post += URLEncoder.encode("city", "UTF-8")
-                            + "=" + URLEncoder.encode(currentCity, "UTF-8");
-
-                    data_post += "&" + URLEncoder.encode("sDate", "UTF-8") + "="
-                            + URLEncoder.encode( String.valueOf(sDate), "UTF-8");
-                    data_post += "&" + URLEncoder.encode("sMonth", "UTF-8") + "="
-                            + URLEncoder.encode( String.valueOf(sMonth), "UTF-8");
-                    data_post += "&" + URLEncoder.encode("sYear", "UTF-8") + "="
-                            + URLEncoder.encode( String.valueOf(sYear), "UTF-8");
-
-                    data_post += "&" + URLEncoder.encode("eDate", "UTF-8") + "="
-                            + URLEncoder.encode( String.valueOf(eDate), "UTF-8");
-                    data_post += "&" + URLEncoder.encode("eMonth", "UTF-8") + "="
-                            + URLEncoder.encode( String.valueOf(eMonth), "UTF-8");
-                    data_post += "&" + URLEncoder.encode("eYear", "UTF-8") + "="
-                            + URLEncoder.encode( String.valueOf(eYear), "UTF-8");
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
+                //currentCity= getSelectedItem().toString();
+                 //   data_post += URLEncoder.encode("city", "UTF-8")
+                 //           + "=" + URLEncoder.encode(currentCity, "UTF-8");
+                //} catch (UnsupportedEncodingException e) {
+                //    e.printStackTrace();
+                //}
 
                 //goto new layer => show the resultat search
                 Intent intent = new Intent(getActivity(),ShowResultActivity.class);
@@ -111,19 +135,43 @@ public class TabFragmentSearch extends Fragment {
         return view;
     }
 
-    private void updateDateStart() {
-        Log.i("show date1","show date1");
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(getContext(), data);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(getActivity(), data);
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            else
+            {
+                Place place = PlaceAutocomplete.getPlace(getContext(), data);
+                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                double MyLat = place.getLatLng().latitude;
+                double MyLong = place.getLatLng().longitude;
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocation(MyLat, MyLong, 1);
+                    String stateName = addresses.get(0).getAdminArea();
+                    text_where_from.setText(stateName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    private void updateDateGo() {
         //show dialog
         DatePickerDialog dateshow = new DatePickerDialog(this.getActivity(),
                 AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, Sdate,
                 dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH));
-        Log.i("show date2","show date2");
         //set minDate
         dateshow.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-        Log.i("show date3","show date3");
         dateshow.show();
-        new TimePickerDialog(this.getActivity(),
-                Stime, dateTime.get(Calendar.HOUR_OF_DAY),dateTime.get(Calendar.MINUTE), true ).show();
     }
 
     DatePickerDialog.OnDateSetListener Sdate = new DatePickerDialog.OnDateSetListener() {
@@ -134,9 +182,16 @@ public class TabFragmentSearch extends Fragment {
             sMonth=month;
             sDate=date;
             //show Time picker
+            text_date_go.setText(sDate+"/"+sMonth+"/"+sYear);
             Log.i("show time1","show time1");
         }
     };
+
+    private void updateTimeGo() {
+        //showDialog
+        new TimePickerDialog(this.getActivity(),
+                Stime, dateTime.get(Calendar.HOUR_OF_DAY), dateTime.get(Calendar.MINUTE), true).show();
+    }
 
     TimePickerDialog.OnTimeSetListener Stime = new TimePickerDialog.OnTimeSetListener() {
         @Override
@@ -144,37 +199,20 @@ public class TabFragmentSearch extends Fragment {
             //dosomething
             sMinute=minute;
             sHour=hour;
-            textStart.setText(sDate+"/"+sMonth+"/"+sYear + " Time "+sHour+":"+sMinute);
+            text_time_go.setText(sHour+":"+sMinute);
         }
     };
 
-    private void updateDateEnd() {
-        DatePickerDialog dateshow = new DatePickerDialog(this.getActivity(),
-                AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, Edate,
-                dateTime.get(Calendar.YEAR), dateTime.get(Calendar.MONTH), dateTime.get(Calendar.DAY_OF_MONTH));
-        dateshow.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-        dateshow.show();
-        new TimePickerDialog(this.getActivity(),
-                Etime, dateTime.get(Calendar.HOUR_OF_DAY),dateTime.get(Calendar.MINUTE), true ).show();
+    private void PlaceAutocomplet() {
+        Intent intent = null;
+        try {
+            intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    .build(getActivity());
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
-
-    DatePickerDialog.OnDateSetListener Edate = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker datePicker, int year, int month, int date) {
-            //do something
-            eYear=year;
-            eMonth=month;
-            eDate=date;
-        }
-    };
-
-    TimePickerDialog.OnTimeSetListener Etime = new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-            //dosomething
-            eMinute=minute;
-            eHour=hour;
-            textEnd.setText(eDate+"/"+eMonth+"/"+eYear + "  "+eHour+":"+eMinute);
-        }
-    };
 }
