@@ -56,10 +56,8 @@ public class TabFragmentSearch extends Fragment {
 
 
     private int sDate,sMonth,sYear,sHour,sMinute;
-    private TextView text_date_go,text_time_go;
-    private EditText text_where_from,text_where_to;
-    private GridLayout layout_date_go,layout_time_go;
-    private LinearLayout layout_where_from,layout_where_to;
+    private TextView text_date_go,text_time_go,text_where_from,text_where_to;
+    private GridLayout layout_date_go,layout_time_go,layout_where_from,layout_where_to;
     private String currentCity;
     private String responsepost;
 
@@ -214,5 +212,10 @@ public class TabFragmentSearch extends Fragment {
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
+    }
+
+    public static TabFragmentSearch newInstance() {
+        TabFragmentSearch fragment = new TabFragmentSearch();
+        return fragment;
     }
 }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
     <TextView
@@ -18,8 +19,9 @@
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:divider="#b5b5b5"
-        android:dividerHeight="1dp"
+        android:padding="10dp"
+        android:paddingLeft="5dp"
+        android:dividerHeight="20dp"
         android:listSelector="@drawable/list_selector" />
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.tnguyen.myapp_driver.InformationTripActivity;
 import com.example.tnguyen.myapp_driver.R;
 import com.example.tnguyen.myapp_driver.task.NetworkAsyncTask;
 
@@ -92,9 +93,9 @@ public class ShowResultActivity extends AppCompatActivity {
                 //String selectedItem = (String) adapterView.getItemAtPosition(i);
                 Log.e("click", String.valueOf(i));
                 // Display the selected item text on TextView
-                //Intent intent = new Intent(getApplicationContext(),ApkInfoActivity.class);
-                //intent.putExtra("name",classes[i]);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(),InformationTripActivity.class);
+                intent.putExtra("name","texst");
+                startActivity(intent);
             }
         });
 

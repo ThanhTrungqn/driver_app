@@ -1,43 +1,49 @@
 package com.example.tnguyen.myapp_driver;
 
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.example.tnguyen.myapp_driver.search_activity.PagerAdapter;
+import com.example.tnguyen.myapp_driver.tablayout.TabFragmentLogin;
+import com.example.tnguyen.myapp_driver.tablayout.TabFragmentSearch;
 
 public class MainActivity extends AppCompatActivity {
-    TabLayout tabLayout;
-    ViewPager viewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle saveInstanceState) {
+
+        super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_main);
 
-        tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Search"));
-        tabLayout.addTab(tabLayout.newTab().setText("Login"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        ViewPager viewPager = findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        BottomNavigationView bottomNavigationView  = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.action_1:
+                        //TabFragmentSearch tabSearch = new TabFragmentSearch();
+                        selectedFragment = TabFragmentSearch.newInstance();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_conter, selectedFragment).commit();
+                        Toast.makeText(MainActivity.this, "action 1", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.action_2:
+                        //TabFragmentLogin tabLogin = new TabFragmentLogin();
+                        Toast.makeText(MainActivity.this, "action 1", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.action_3:
+                        Toast.makeText(MainActivity.this, "action 1", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
     }
-
-    public void onTabSelected(TabLayout.Tab tab) {
-        viewPager.setCurrentItem(tab.getPosition());
-    }
-
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
-
 }
